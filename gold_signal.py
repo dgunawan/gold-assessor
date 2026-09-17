@@ -91,7 +91,12 @@ def main():
     dxy = get_dxy()
 
     # Rough 52-week high proxy (you can hard-code recent high ~5318 or fetch longer history)
-    gold_hist = yf.download("GC=F", period="1y", progress=False)
+    gold_hist = yf.download("GC=F", period="1y", progress=False, auto_adjust=True)
+    if gold_hist.empty:
+        high_52w = 5318.0
+    else:
+        # This works in almost all yfinance versions
+        high_52w = float(gold_hist["High"].values.max())
     high_52w = float(gold_hist["High"].max()) if not gold_hist.empty else 5318
 
     print(f"Gold (GC=F proxy): ${gold:,.2f}" if gold else "Gold: N/A")
